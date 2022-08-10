@@ -19,8 +19,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
-
 class SecondPage extends StatelessWidget {
   const SecondPage({Key? key, required this.title}) : super(key: key);
   final String title;
