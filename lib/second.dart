@@ -21,18 +21,58 @@ class OEmbedMessage {
 }
 
 class OEmbedData {
-  String a;
-  String b;
+  String type;
+  String version;
+  String title;
+  String authorName;
+  String authorUrl;
+  String providerName;
+  String providerUrl;
+  String cacheAge;
+  String thumbnailUrl;
+  String thumbnailWidth;
+  String thumbnailHeight;
+
+  String url;
+  String html;
+  String width;
+  String height;
 
   OEmbedData({
-    required this.a,
-    required this.b,
+    required this.type,
+    required this.version,
+    required this.title,
+    required this.authorName,
+    required this.authorUrl,
+    required this.providerName,
+    required this.providerUrl,
+    required this.cacheAge,
+    required this.thumbnailUrl,
+    required this.thumbnailWidth,
+    required this.thumbnailHeight,
+    required this.url,
+    required this.html,
+    required this.width,
+    required this.height,
   });
 
   factory OEmbedData.fromJson(Map<String, dynamic> json) {
     return OEmbedData(
-      a: json['title'].toString(),
-      b: json['data'].toString(),
+      type: json['type'].toString(),
+      version: json['version'].toString(),
+      title: json['title'].toString(),
+      authorName: json['authorName'].toString(),
+      authorUrl: json['authorUrl'].toString(),
+      providerName: json['providerName'].toString(),
+      providerUrl: json['providerUrl'].toString(),
+      cacheAge: json['cacheAge'].toString(),
+      thumbnailUrl: json['thumbnailUrl'].toString(),
+      thumbnailWidth: json['thumbnailWidth'].toString(),
+      thumbnailHeight: json['thumbnailHeight'].toString(),
+      url: json['url'].toString(),
+      html: json['html'].toString(),
+      width: json['width'].toString(),
+      height: json['height'].toString(),
     );
   }
 }
@@ -72,7 +112,7 @@ class SecondPage extends StatelessWidget {
           return snapshot.hasData
           ? TextButton(
             onPressed: () {
-              log(snapshot.data.data.b);
+              log(snapshot.data.data.title);
             },
             child: const Text('Go Back'),
           ) : const Center(child: CircularProgressIndicator());
