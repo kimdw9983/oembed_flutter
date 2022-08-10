@@ -1,22 +1,55 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:developer';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+class OEmbedMessage {
+  final String status;
+  final OEmbedData data;
+
+  OEmbedMessage({required this.status, required this.data});
+
+  factory OEmbedMessage.fromJson(Map<String, dynamic> json) {
+    return OEmbedMessage(
+      status: json['status'],
+      data: OEmbedData.fromJson(json['data'])
+    );
+  }
+}
+
+class OEmbedData {
+  String a;
+  String b;
+
+  OEmbedData({
+    required this.a,
+    required this.b,
+  });
+
+  factory OEmbedData.fromJson(Map<String, dynamic> json) {
+    return OEmbedData(
+      a: json['title'].toString(),
+      b: json['data'].toString(),
+    );
+  }
+}
+
 const address = "222.109.61.70";
-Future<Map<String, dynamic>> oEmbed(String url) async {
+Future<OEmbedMessage> request(http.Client client, String url) async {
   var uri = Uri(scheme: 'http', host: address, port: 8080, path: '/oembed/$url');
   log('get() url : $url, uri : $uri');
-  final response = await http.get(uri);
-  final Map<String, dynamic> test = jsonDecode(response.body);
-  //log(test["data"]["title"]);
-  final Future<Map<String, dynamic>> parsedResponse = jsonDecode(response.body);
 
+  final response = await client.get(uri);
 
-  //_posts.clear();
-  //_posts.addAll(parsedResponse);
-  return await parsedResponse;
+  //별도의 isolate 에서 수행하여 버벅이는 현상을 없앤다.
+  return compute(parseJson, response.body);
+}
+
+OEmbedMessage parseJson(String responseBody) {
+  return OEmbedMessage.fromJson(json.decode(responseBody));
 }
 
 class SecondPage extends StatelessWidget {
@@ -29,32 +62,20 @@ class SecondPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: FutureBuilder(
-        future: oEmbed("https://www.youtube.com/watch?v=FtutLA63Cp8"),
+      body: FutureBuilder<OEmbedMessage>(
+        future: request(http.Client(), "https://www.youtube.com/watch?v=FtutLA63Cp8"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          switch(snapshot.connectionState) {
-            case ConnectionState.none:
-              return const Text("there is no connection");
-
-            case ConnectionState.active:
-            case ConnectionState.waiting:
-              return const Center(child: CircularProgressIndicator());
-
-            case ConnectionState.done:
-              if (snapshot.data != null){
-                log("not null");
-                Map<String, dynamic> myMap = snapshot.data as Map<String, dynamic>;
-
-                return TextButton(
-                  onPressed: () {
-                    myMap["data"];
-
-                  },
-                  child: const Text('Go Back'),
-                );
-              }
-              return const Text("no data found!");
+          if (snapshot.hasError) {
+            log("error found! $snapshot.error");
           }
+
+          return snapshot.hasData
+          ? TextButton(
+            onPressed: () {
+              log(snapshot.data.data.b);
+            },
+            child: const Text('Go Back'),
+          ) : const Center(child: CircularProgressIndicator());
         }
       ),
     );
