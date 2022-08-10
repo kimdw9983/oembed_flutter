@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:battery_plus/battery_plus.dart';
@@ -13,11 +14,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'oEmbed Interface',
+      theme: ThemeData(primarySwatch: Colors.blue, ),
+      home: const MyHomePage(title: 'oEmbed Interface'),
     );
   }
 }
@@ -75,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title, style: TextStyle(color: Colors.white)),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
         backgroundColor: Colors.green,
         centerTitle: true,
       ),
@@ -86,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             const Text('You have pushed the button this many times:', ),
             Text('$_counter', style: Theme.of(context).textTheme.headline4,),
-            Text('Battery Percentage: $percentage', style: const TextStyle(fontSize: 24),)
+            Text('Battery Percentage: $percentage', style: const TextStyle(fontSize: 24),),
           ],
         ),
       ),
@@ -94,6 +93,46 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
+      ),
+      bottomNavigationBar: Material(
+        color: const Color(0xffff8906),
+        child: InkWell(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return const SecondPage(title: 'SecondPage');
+          }));
+        },
+        child: const SizedBox(
+          height: kToolbarHeight,
+          width: double.infinity,
+          child: Center(
+            child: Text(
+              'Next',
+              style: TextStyle(fontWeight: FontWeight.bold,),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondPage extends StatelessWidget {
+  const SecondPage({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Center(
+        child: TextButton(
+          onPressed: () {},
+          child: const Text('Go Back'),
+        ),
       ),
     );
   }
