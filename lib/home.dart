@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:battery_plus/battery_plus.dart';
+
+import 'second.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -52,18 +51,6 @@ class _MyHomePageState extends State<MyHomePage> {
     percentage = level;
 
     setState(() {});
-  }
-
-  final address = "http://127.0.0.1";
-  Future<Map<String, dynamic>> oEmbed(String url) async {
-    var uri = Uri(scheme: 'http', host: '127.0.0.1', path: '/oembed/', fragment: url);
-    log('get() url : $url, uri : $uri');
-    final response = await http.get(uri);
-    final Map<String, dynamic> parsedResponse = jsonDecode(response.body);
-
-    //_posts.clear();
-    //_posts.addAll(parsedResponse);
-    return parsedResponse;
   }
 
   @override
