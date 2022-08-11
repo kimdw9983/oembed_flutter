@@ -184,10 +184,19 @@ List<DataRow> getDataRow(OEmbedData data) {
   if (data.width.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("width")), DataCell(Text(data.width.toString()))] ));
   if (data.height.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("height")), DataCell(Text(data.height.toString()))] ));
   if (data.html.toString() != "null") {
+    //manually parse iframe to get oembed src
+    String raw = data.html.toString();
+    String src = "";
+    var pattern = RegExp("src=\\\"(.*?]*)\"");
+    if (pattern.hasMatch(raw)) {
+      var f = pattern.stringMatch(raw).toString();
+      src = f.substring(5, f.length-1);
+    }
+
     res.add(DataRow(cells: [
       const DataCell(Text("html")),
       DataCell(WebView(
-        initialUrl: Uri.dataFromString("<html><body><iframe src=https://www.youtube.com/embed/FtutLA63Cp8?feature=oembed </iframe></body></html>", mimeType: 'text/html').toString(),
+        initialUrl: Uri.dataFromString("<html><body><iframe src=$src height=150 width=200</iframe></body></html>", mimeType: 'text/html').toString(),
         javascriptMode: JavascriptMode.unrestricted,
       ))
     ]));
