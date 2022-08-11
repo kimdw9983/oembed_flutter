@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'second.dart';
 
+class URLArguments {
+  final String title;
+  final String url;
+
+  URLArguments(this.title, this.url);
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -15,6 +22,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
   }
+
+  TextEditingController urlField = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.0),
           child: Text(
-            'oEmbed는 여러 사이트의 컨텐츠가 포함된 url을\n내장된 표현으로 보여주게 하는 형식입니다.\n\nYoutube 임베드 영상, Twitter의 트윗, Face',
+            'oEmbed는 여러 사이트의 컨텐츠가 포함된 url을\n내장된 표현으로 보여주게 하는 형식입니다.',
             style: TextStyle(
                 fontSize: 16,
                 color: Colors.white
@@ -80,11 +89,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   TextFormField(
+                    controller: urlField,
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: EdgeInsets.all(10),
-                      hintText: "https://www.youtu.be/FtutLA63Cp8",
+                      hintText: "https://youtu.be/FtutLA63Cp8",
                       hintStyle: TextStyle(
                         color: Colors.black26,
                         fontSize: 16.0,
@@ -114,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const SecondPage(title: 'SecondPage');
+              return SecondPage(arg: URLArguments("TEST", urlField.text));
             }));
           },
           child: const SizedBox(

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'dart:developer';
 import 'package:http/http.dart' as http;
+import 'package:oembed_flutter/home.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -80,12 +81,14 @@ class OEmbedData {
   }
 }
 
-const address = "222.109.61.70;
+const address = "222.109.61.70";
 Future<OEmbedMessage> request(http.Client client, String url) async {
   var uri = Uri(scheme: 'http', host: address, port: 8080, path: '/oembed/$url');
   log('get() url : $url, uri : $uri');
 
   final response = await client.get(uri);
+  var json = jsonDecode(response.body); //TODO: FIX THIS HACK
+  if (json["status"] != "OK") throw Exception(json["data"]);
 
   //별도의 isolate 에서 수행하여 버벅이는 현상을 없앤다.
   return compute(parseJson, response.body);
@@ -96,16 +99,31 @@ OEmbedMessage parseJson(String responseBody) {
 }
 
 class SecondPage extends StatelessWidget {
-  const SecondPage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const SecondPage({Key? key, required this.arg}) : super(key: key);
+  final URLArguments arg;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<OEmbedMessage>(
-        future: request(http.Client(), "https://www.youtube.com/watch?v=FtutLA63Cp8"),
+        future: request(http.Client(), arg.url),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasError) log("$snapshot.error");
+          if (snapshot.hasError) {
+            //log("${snapshot.error}");
+            return AlertDialog(
+              title: const Text('오류'),
+              content: Text(snapshot.error.toString().substring(10)),
+              actions: <Widget>[
+                TextButton(
+                  child: const Align(
+                      alignment: Alignment.center,
+                      child: Text("돌아가기", textAlign: TextAlign.center,),
+                  ),
+                  onPressed: () { Navigator.pop(context); }, //closes popup
+                ),
+              ],
+            );
+          }
           return snapshot.hasData ? OEmbedView(data: snapshot.data.data)
               : const Center(child: CircularProgressIndicator());
         }
