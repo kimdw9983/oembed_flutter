@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -175,7 +176,8 @@ List<DataRow> getDataRow(OEmbedData data) {
     ]));
   }
   if (data.thumbnailUrl.toString() != "null") {
-    res.add(DataRow(cells: [const DataCell(Text("thumbnail")), DataCell(Image.network(data.thumbnailUrl.toString()))] ));
+    res.add(DataRow(cells: [const DataCell(Text("thumbnail")), DataCell(Image.network(data.thumbnailUrl.toString())),]
+    ));
   }
   if (data.thumbnailWidth.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_width")), DataCell(Text(data.thumbnailWidth.toString()))] ));
   if (data.thumbnailHeight.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_height")), DataCell(Text(data.thumbnailHeight.toString()))] ));
@@ -183,28 +185,13 @@ List<DataRow> getDataRow(OEmbedData data) {
   if (data.url.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("url")), DataCell(Text(data.url.toString()))] ));
   if (data.width.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("width")), DataCell(Text(data.width.toString()))] ));
   if (data.height.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("height")), DataCell(Text(data.height.toString()))] ));
-  if (data.html.toString() != "null") {
-    //manually parse iframe to get oembed src
-    String raw = data.html.toString();
-    String src = "";
-    var pattern = RegExp("src=\\\"(.*?]*)\"");
-    if (pattern.hasMatch(raw)) {
-      var f = pattern.stringMatch(raw).toString();
-      src = f.substring(5, f.length-1);
-    }
+  if (data.html.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("html")), DataCell(Text(data.html.toString()))] ));
 
-    res.add(DataRow(cells: [
-      const DataCell(Text("html")),
-      DataCell(WebView(
-        initialUrl: Uri.dataFromString("<html><body><iframe src=$src height=150 width=200</iframe></body></html>", mimeType: 'text/html').toString(),
-        javascriptMode: JavascriptMode.unrestricted,
-      ))
-    ]));
-  }
   return res;
 }
 
-SizedBox getEmbed(String html) {
+SizedBox getEmbed(OEmbedData data) {
+  String html = data.html.toString();
   String raw = html;
   String src = "";
   var pattern = RegExp("src=\\\"(.*?]*)\"");
@@ -213,13 +200,21 @@ SizedBox getEmbed(String html) {
     src = f.substring(5, f.length-1);
   }
 
+  final Completer<WebViewController> controller = Completer<WebViewController>();
+
   return SizedBox(
     width: 200,
     height: 150,
-    child: WebView(
-      initialUrl: Uri.dataFromString("<html><body><iframe src=$src height=150 width=200</iframe></body></html>", mimeType: 'text/html').toString(),
-      javascriptMode: JavascriptMode.unrestricted,
-      //javascriptChannels: Set.from([]),
+    child: Stack(
+      alignment: Alignment.topCenter,
+      children: [WebView(
+        initialUrl: Uri.dataFromString("<html><body><iframe frameborder='0' style='top:0;left:0;position:absolute;width:100%;height:100%' src=$src allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' </iframe></body></html>", mimeType: 'text/html').toString(),
+        javascriptMode: JavascriptMode.unrestricted,
+        onWebViewCreated: (WebViewController webViewController) {
+          controller.complete(webViewController);
+        },
+        gestureNavigationEnabled: true,
+      ),]
     ),
   );
 }
@@ -235,7 +230,7 @@ class OEmbedView extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              getEmbed(data.html.toString()),
+              getEmbed(data),
               DataTable(
                 columns: const <DataColumn>[
                   DataColumn(label: Text('Field')),
@@ -246,8 +241,6 @@ class OEmbedView extends StatelessWidget {
             ],
           ),
         ),
-
-
     );
   }
 }
