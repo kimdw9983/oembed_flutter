@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'dart:developer';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class OEmbedMessage {
   final String status;
@@ -140,29 +142,58 @@ class _MyCustomFormState extends State<MyCustomForm> {
   }
 }
 
+//https://stackoverflow.com/questions/53001839/how-to-convert-response-json-to-object-in-flutter
+//왜 simple nested json 구조를 파싱하지 못하는지 확인해야 함.
 List<DataRow> getDataRow(OEmbedData data) {
   List<DataRow> res = [];
 
   res.add(DataRow(cells: [const DataCell(Text("type")), DataCell(Text(data.type.toString()))] ));
   res.add(DataRow(cells: [const DataCell(Text("version")), DataCell(Text(data.version.toString()))] ));
-  if (data.providerName.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("providerName")), DataCell(Text(data.providerName.toString()))] ));
-  if (data.providerUrl.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("providerUrl")), DataCell(Text(data.providerUrl.toString()))] ));
+  if (data.providerName.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("provider_name")), DataCell(Text(data.providerName.toString()))] ));
+  if (data.providerUrl.toString() != "null") {
+    res.add(DataRow(cells: [const DataCell(Text("provider_url")), DataCell(GestureDetector(
+        child: Text(data.providerUrl.toString(), style: const TextStyle(decoration: TextDecoration.underline, color: Colors.blue)),
+        onTap: () async {
+          String url = data.providerUrl.toString();
+          if(await canLaunchUrlString(url)) launchUrlString(url);
+        },
+      ))
+    ]));
+  }
   if (data.cacheAge.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("cacheAge")), DataCell(Text(data.cacheAge.toString()))] ));
 
   if (data.title.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("title")), DataCell(Text(data.title.toString()))] ));
   if (data.authorName.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("author_name")), DataCell(Text(data.authorName.toString()))] ));
-  if (data.authorUrl.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("author_url")), DataCell(Text(data.authorUrl.toString()))] ));
-
-  if (data.thumbnailUrl.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_url")), DataCell(Text(data.thumbnailUrl.toString()))] ));
+  if (data.authorUrl.toString() != "null") {
+    res.add(DataRow(cells: [const DataCell(Text("author_url")), DataCell(GestureDetector(
+      child: Text(data.authorUrl.toString(), style: const TextStyle(decoration: TextDecoration.underline, color: Colors.blue)),
+      onTap: () async {
+        String url = data.authorUrl.toString();
+        if(await canLaunchUrlString(url)) launchUrlString(url);
+      },
+    ))
+    ]));
+  }
+  if (data.thumbnailUrl.toString() != "null") {
+    res.add(DataRow(cells: [const DataCell(Text("thumbnail")), DataCell(Image.network(data.thumbnailUrl.toString()))] ));
+  }
   if (data.thumbnailWidth.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_width")), DataCell(Text(data.thumbnailWidth.toString()))] ));
   if (data.thumbnailHeight.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_height")), DataCell(Text(data.thumbnailHeight.toString()))] ));
 
   if (data.url.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("url")), DataCell(Text(data.url.toString()))] ));
-  if (data.html.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("html")), DataCell(Text(data.html.toString()))] ));
   if (data.width.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("width")), DataCell(Text(data.width.toString()))] ));
   if (data.height.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("height")), DataCell(Text(data.height.toString()))] ));
-
+  if (data.html.toString() != "null") {
+    res.add(DataRow(cells: [
+      const DataCell(Text("html")),
+      DataCell(WebView(
+        initialUrl: Uri.dataFromString("<html><body><iframe src=https://www.youtube.com/embed/FtutLA63Cp8?feature=oembed </iframe></body></html>", mimeType: 'text/html').toString(),
+        javascriptMode: JavascriptMode.unrestricted,
+      ))
+    ]));
+  }
   return res;
+
 }
 
 class OEmbedView extends StatelessWidget {
