@@ -1,16 +1,10 @@
 # oembed_flutter
+[oEmbed api](https://github.com/kimdw9983/oEmbed)를 인터페이스 하기 위한 Flutter frontend 프로젝트입니다. 
 
-A new Flutter project.
+![image](https://user-images.githubusercontent.com/93891414/184060802-dcb88c92-562c-4c15-944b-cf280cb85a19.png)
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 실행 환경
+- iOS
+- Android (Tested on Android API 30+)
+- Web
