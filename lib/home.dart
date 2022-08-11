@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
                   const Text(
-                    'Sign in',
+                    '사용해보기',
                     style: TextStyle(
                         fontSize: 24,
                         color: Colors.black,
