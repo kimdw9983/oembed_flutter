@@ -61,14 +61,14 @@ class OEmbedData {
       type: json['type'].toString(),
       version: json['version'].toString(),
       title: json['title'].toString(),
-      authorName: json['authorName'].toString(),
-      authorUrl: json['authorUrl'].toString(),
-      providerName: json['providerName'].toString(),
-      providerUrl: json['providerUrl'].toString(),
-      cacheAge: json['cacheAge'].toString(),
-      thumbnailUrl: json['thumbnailUrl'].toString(),
-      thumbnailWidth: json['thumbnailWidth'].toString(),
-      thumbnailHeight: json['thumbnailHeight'].toString(),
+      authorName: json['author_name'].toString(),
+      authorUrl: json['author_url'].toString(),
+      providerName: json['provider_name'].toString(),
+      providerUrl: json['provider_url'].toString(),
+      cacheAge: json['cache_age'].toString(),
+      thumbnailUrl: json['thumbnail_url'].toString(),
+      thumbnailWidth: json['thumbnail_width'].toString(),
+      thumbnailHeight: json['thumbnail_height'].toString(),
       url: json['url'].toString(),
       html: json['html'].toString(),
       width: json['width'].toString(),
@@ -99,9 +99,6 @@ class SecondPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
       body: FutureBuilder<OEmbedMessage>(
         future: request(http.Client(), "https://www.youtube.com/watch?v=FtutLA63Cp8"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -114,11 +111,58 @@ class SecondPage extends StatelessWidget {
   }
 }
 
-List<DataRow> getDataRow(OEmbedData data) {
-  List<DataRow> res;
+class MyCustomForm extends StatefulWidget {
+  const MyCustomForm({super.key});
 
-  DataRow(cells: [DataCell(Text(data.authorName.toString())), DataCell(Text(data.authorName.toString()))]);
-  return [];
+  @override
+  State<MyCustomForm> createState() => _MyCustomFormState();
+}
+
+// Define a corresponding State class.
+// This class holds the data related to the Form.
+class _MyCustomFormState extends State<MyCustomForm> {
+  // Create a text controller and use it to retrieve the current value
+  // of the TextField.
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: myController,
+    );
+  }
+}
+
+List<DataRow> getDataRow(OEmbedData data) {
+  List<DataRow> res = [];
+
+  res.add(DataRow(cells: [const DataCell(Text("type")), DataCell(Text(data.type.toString()))] ));
+  res.add(DataRow(cells: [const DataCell(Text("version")), DataCell(Text(data.version.toString()))] ));
+  if (data.providerName.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("providerName")), DataCell(Text(data.providerName.toString()))] ));
+  if (data.providerUrl.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("providerUrl")), DataCell(Text(data.providerUrl.toString()))] ));
+  if (data.cacheAge.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("cacheAge")), DataCell(Text(data.cacheAge.toString()))] ));
+
+  if (data.title.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("title")), DataCell(Text(data.title.toString()))] ));
+  if (data.authorName.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("author_name")), DataCell(Text(data.authorName.toString()))] ));
+  if (data.authorUrl.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("author_url")), DataCell(Text(data.authorUrl.toString()))] ));
+
+  if (data.thumbnailUrl.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_url")), DataCell(Text(data.thumbnailUrl.toString()))] ));
+  if (data.thumbnailWidth.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_width")), DataCell(Text(data.thumbnailWidth.toString()))] ));
+  if (data.thumbnailHeight.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_height")), DataCell(Text(data.thumbnailHeight.toString()))] ));
+
+  if (data.url.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("url")), DataCell(Text(data.url.toString()))] ));
+  if (data.html.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("html")), DataCell(Text(data.html.toString()))] ));
+  if (data.width.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("width")), DataCell(Text(data.width.toString()))] ));
+  if (data.height.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("height")), DataCell(Text(data.height.toString()))] ));
+
+  return res;
 }
 
 class OEmbedView extends StatelessWidget {
@@ -129,13 +173,13 @@ class OEmbedView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(data.title.toString())),
-        body: Container(
+        body: SingleChildScrollView(
           child: DataTable(
-          columns: const <DataColumn>[
-            DataColumn(label: Text('Field')),
-            DataColumn(label: Text('Data')),
-          ],
-          rows: getDataRow(data),
+            columns: const <DataColumn>[
+              DataColumn(label: Text('Field')),
+              DataColumn(label: Text('Data')),
+            ],
+            rows: getDataRow(data),
           ),
         ),
     );
