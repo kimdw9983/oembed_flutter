@@ -80,7 +80,7 @@ class OEmbedData {
   }
 }
 
-const address = "10.0.2.2";
+const address = "222.109.61.70;
 Future<OEmbedMessage> request(http.Client client, String url) async {
   var uri = Uri(scheme: 'http', host: address, port: 8080, path: '/oembed/$url');
   log('get() url : $url, uri : $uri');
