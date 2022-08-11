@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:battery_plus/battery_plus.dart';
 
 import 'second.dart';
 
@@ -14,71 +11,106 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  var battery = Battery();
-  int percentage = 0;
-  late Timer timer;
-
-  BatteryState batteryState = BatteryState.full;
-  late StreamSubscription streamSubscription;
-
   @override
   void initState() {
     super.initState();
-    getBatteryState();
-
-    Timer.periodic(const Duration(seconds: 5), (timer) {
-      getBatteryPerentage();
-    });
-  }
-
-  void getBatteryState() {
-    streamSubscription = battery.onBatteryStateChanged.listen((state) {
-      batteryState = state;
-
-      setState(() {});
-    });
-  }
-
-  void getBatteryPerentage() async {
-    final level = await battery.batteryLevel;
-    percentage = level;
-
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
-        backgroundColor: Colors.green,
-        centerTitle: true,
-      ),
-      body: Center(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.blue,
+      body: SafeArea(
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:', ),
-            Text('$_counter', style: Theme.of(context).textTheme.headline4,),
-            Text('Battery Percentage: $percentage', style: const TextStyle(fontSize: 24),),
-          ],
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+        const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
+          child: Text('oEmbed Interface',
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 38,
+                fontWeight: FontWeight.bold
+            ),),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.0),
+          child: Text(
+            'oEmbed는 여러 사이트의 컨텐츠가 포함된 url을\n내장된 표현으로 보여주게 하는 형식입니다.\n\nYoutube 임베드 영상, Twitter의 트윗, Face',
+            style: TextStyle(
+                fontSize: 16,
+                color: Colors.white
+            ),
+          ),
+        ),
+        const Padding(padding: EdgeInsets.symmetric(vertical: 65.0)),
+        Expanded(
+          flex: 1,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0)
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+                  const Text(
+                    'Sign in',
+                    style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+                  const Text(
+                    "URL",
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black
+                    ),
+                  ),
+                  TextFormField(
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.all(10),
+                      hintText: "https://www.youtu.be/FtutLA63Cp8",
+                      hintStyle: TextStyle(
+                        color: Colors.black26,
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+                  const Text(
+                    '여러분이 자주 사용하시는 사이트의 주소를 입력해보세요',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  const Spacer(),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],),
       ),
       bottomNavigationBar: Material(
-        color: const Color(0xffff8906),
+        color: Colors.blue,
         child: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -90,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
             width: double.infinity,
             child: Center(
               child: Text(
-                'Next',
-                style: TextStyle(fontWeight: FontWeight.bold,),
+                '검색',
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
           ),
