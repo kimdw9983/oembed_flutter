@@ -202,7 +202,26 @@ List<DataRow> getDataRow(OEmbedData data) {
     ]));
   }
   return res;
+}
 
+SizedBox getEmbed(String html) {
+  String raw = html;
+  String src = "";
+  var pattern = RegExp("src=\\\"(.*?]*)\"");
+  if (pattern.hasMatch(raw)) {
+    var f = pattern.stringMatch(raw).toString();
+    src = f.substring(5, f.length-1);
+  }
+
+  return SizedBox(
+    width: 200,
+    height: 150,
+    child: WebView(
+      initialUrl: Uri.dataFromString("<html><body><iframe src=$src height=150 width=200</iframe></body></html>", mimeType: 'text/html').toString(),
+      javascriptMode: JavascriptMode.unrestricted,
+      //javascriptChannels: Set.from([]),
+    ),
+  );
 }
 
 class OEmbedView extends StatelessWidget {
@@ -214,14 +233,21 @@ class OEmbedView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text(data.title.toString())),
         body: SingleChildScrollView(
-          child: DataTable(
-            columns: const <DataColumn>[
-              DataColumn(label: Text('Field')),
-              DataColumn(label: Text('Data')),
+          child: Column(
+            children: [
+              getEmbed(data.html.toString()),
+              DataTable(
+                columns: const <DataColumn>[
+                  DataColumn(label: Text('Field')),
+                  DataColumn(label: Text('Data')),
+                ],
+                rows: getDataRow(data),
+              ),
             ],
-            rows: getDataRow(data),
           ),
         ),
+
+
     );
   }
 }
