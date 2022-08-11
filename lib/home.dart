@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: InkWell(
           onTap: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return SecondPage(arg: URLArguments("TEST", urlField.text));
+              return SecondPage(arg: URLArguments("TEST", urlField.text.isNotEmpty ? urlField.text : "http"));
             }));
           },
           child: const SizedBox(
