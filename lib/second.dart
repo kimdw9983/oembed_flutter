@@ -8,47 +8,88 @@ import 'package:http/http.dart' as http;
 
 class OEmbedMessage {
   final String status;
-  final Map data;
-  //final data;
+  final OEmbedData data;
 
   OEmbedMessage({required this.status, required this.data});
 
   factory OEmbedMessage.fromJson(Map<String, dynamic> json) {
     return OEmbedMessage(
-      status: json['status'],
-      //data: OEmbedData.fromJson(json['data'])
-      data: json['data'] as Map
+        status: json['status'],
+        data: OEmbedData.fromJson(json['data'])
     );
   }
 }
 
 class OEmbedData {
-  final Map<String, dynamic> data;
+  String type;
+  String version;
+  String title;
+  String authorName;
+  String authorUrl;
+  String providerName;
+  String providerUrl;
+  String cacheAge;
+  String thumbnailUrl;
+  String thumbnailWidth;
+  String thumbnailHeight;
 
-  OEmbedData({required this.data});
+  String url;
+  String html;
+  String width;
+  String height;
+
+  OEmbedData({
+    required this.type,
+    required this.version,
+    required this.title,
+    required this.authorName,
+    required this.authorUrl,
+    required this.providerName,
+    required this.providerUrl,
+    required this.cacheAge,
+    required this.thumbnailUrl,
+    required this.thumbnailWidth,
+    required this.thumbnailHeight,
+    required this.url,
+    required this.html,
+    required this.width,
+    required this.height,
+  });
 
   factory OEmbedData.fromJson(Map<String, dynamic> json) {
     return OEmbedData(
-      data: json['data'] as Map<String, String>
+      type: json['type'].toString(),
+      version: json['version'].toString(),
+      title: json['title'].toString(),
+      authorName: json['authorName'].toString(),
+      authorUrl: json['authorUrl'].toString(),
+      providerName: json['providerName'].toString(),
+      providerUrl: json['providerUrl'].toString(),
+      cacheAge: json['cacheAge'].toString(),
+      thumbnailUrl: json['thumbnailUrl'].toString(),
+      thumbnailWidth: json['thumbnailWidth'].toString(),
+      thumbnailHeight: json['thumbnailHeight'].toString(),
+      url: json['url'].toString(),
+      html: json['html'].toString(),
+      width: json['width'].toString(),
+      height: json['height'].toString(),
     );
   }
 }
 
-const address = "222.109.61.70";
-Future<Map<String, dynamic>> request(http.Client client, String url) async {
+const address = "10.0.2.2";
+Future<OEmbedMessage> request(http.Client client, String url) async {
   var uri = Uri(scheme: 'http', host: address, port: 8080, path: '/oembed/$url');
-  log('uri : $uri');
+  log('get() url : $url, uri : $uri');
 
   final response = await client.get(uri);
-  final json = jsonDecode(response.body) as Map;//compute(parseJson, response.body);
-  final data = json['data'] as Map;
 
   //별도의 isolate 에서 수행하여 버벅이는 현상을 없앤다.
-  return data;
+  return compute(parseJson, response.body);
 }
 
-Map parseJson(String responseBody) {
-  return json.decode(responseBody) as Map;
+OEmbedMessage parseJson(String responseBody) {
+  return OEmbedMessage.fromJson(json.decode(responseBody));
 }
 
 class SecondPage extends StatelessWidget {
@@ -61,7 +102,7 @@ class SecondPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: FutureBuilder<Map<String, dynamic>>(
+      body: FutureBuilder<OEmbedMessage>(
         future: request(http.Client(), "https://www.youtube.com/watch?v=FtutLA63Cp8"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasError) log("$snapshot.error");
@@ -73,22 +114,30 @@ class SecondPage extends StatelessWidget {
   }
 }
 
+List<DataRow> getDataRow(OEmbedData data) {
+  List<DataRow> res;
+
+  DataRow(cells: [DataCell(Text(data.authorName.toString())), DataCell(Text(data.authorName.toString()))]);
+  return [];
+}
+
 class OEmbedView extends StatelessWidget {
-  final Map data;
+  final OEmbedData data;
   const OEmbedView({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(data["data"].toString())),
+        appBar: AppBar(title: Text(data.title.toString())),
         body: Container(
-            child: Table(
-                children: (data["data"] as List)
-                    .map((item) => TableRow(children: [
-                  Text(item['id'].toString()),
-                  Text(item['report_id'].toString()),
-                  Text(item['place']),
-                ]))
-                    .toList())));
+          child: DataTable(
+          columns: const <DataColumn>[
+            DataColumn(label: Text('Field')),
+            DataColumn(label: Text('Data')),
+          ],
+          rows: getDataRow(data),
+          ),
+        ),
+    );
   }
 }
