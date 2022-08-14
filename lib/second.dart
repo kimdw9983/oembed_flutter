@@ -132,35 +132,6 @@ class SecondPage extends StatelessWidget {
   }
 }
 
-class MyCustomForm extends StatefulWidget {
-  const MyCustomForm({super.key});
-
-  @override
-  State<MyCustomForm> createState() => _MyCustomFormState();
-}
-
-// Define a corresponding State class.
-// This class holds the data related to the Form.
-class _MyCustomFormState extends State<MyCustomForm> {
-  // Create a text controller and use it to retrieve the current value
-  // of the TextField.
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      controller: myController,
-    );
-  }
-}
-
 //https://stackoverflow.com/questions/53001839/how-to-convert-response-json-to-object-in-flutter
 //왜 simple nested json 구조를 파싱하지 못하는지 확인해야 함.
 List<DataRow> getDataRow(OEmbedData data) {

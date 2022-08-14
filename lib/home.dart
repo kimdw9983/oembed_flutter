@@ -9,6 +9,86 @@ class URLArguments {
   URLArguments(this.title, this.url);
 }
 
+class InputForm extends StatefulWidget {
+  const InputForm({Key? key, required this.url}) : super(key: key);
+  final TextEditingController url;
+
+  @override
+  State<InputForm> createState() => _InputFormState();
+}
+
+class _InputFormState extends State<InputForm> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  double bannerHeight = 200;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: bannerHeight,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0)
+        ),
+      ),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '사용해보기',
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+              const Text(
+                "URL",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  color: Colors.black
+                ),
+              ),
+              TextFormField(
+                controller: widget.url,
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: EdgeInsets.all(10),
+                  hintText: "https://youtu.be/FtutLA63Cp8",
+                  hintStyle: TextStyle(
+                    color: Colors.black26,
+                    fontSize: 16.0,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+              const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+              const Text(
+                '여러분이 자주 사용하시는 사이트의 주소를 입력해보세요',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
@@ -32,92 +112,34 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.blue,
       body: SafeArea(
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-        const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.0),
-          child: Text('oEmbed Interface',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 38,
-                fontWeight: FontWeight.bold
-            ),),
-        ),
-        const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.0),
-          child: Text(
-            'oEmbed는 여러 사이트의 컨텐츠가 포함된 url을\n내장된 표현으로 보여주게 하는 형식입니다.',
-            style: TextStyle(
-                fontSize: 16,
-                color: Colors.white
-            ),
-          ),
-        ),
-        const Padding(padding: EdgeInsets.symmetric(vertical: 65.0)),
-        Expanded(
-          flex: 1,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0)
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              child: Text('oEmbed Interface',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 38,
+                  fontWeight: FontWeight.bold
+                ),
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
-                  const Text(
-                    '사용해보기',
-                    style: TextStyle(
-                        fontSize: 24,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
-                  const Text(
-                    "URL",
-                    style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black
-                    ),
-                  ),
-                  TextFormField(
-                    controller: urlField,
-                    decoration: const InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.all(10),
-                      hintText: "https://youtu.be/FtutLA63Cp8",
-                      hintStyle: TextStyle(
-                        color: Colors.black26,
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                  const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
-                  const Text(
-                    '여러분이 자주 사용하시는 사이트의 주소를 입력해보세요',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  const Spacer(),
-                ],
+            const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.0),
+              child: Text(
+                'oEmbed는 여러 사이트의 컨텐츠가 포함된 url을\n내장된 표현으로 보여주게 하는 형식입니다.',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white
+                ),
               ),
             ),
-          ),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 65.0)),
+            InputForm(url: urlField),
+          ],
         ),
-      ],),
       ),
       bottomNavigationBar: Material(
         color: Colors.blue,
