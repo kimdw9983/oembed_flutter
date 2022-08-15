@@ -21,6 +21,7 @@ oEmbed는 2008년 Slack의 공동 창업자인 Cal Henderson 이 제안한 Open 
 consumer( 위에서 언급했던 Facebook 과 같은 SNS 혹은 커뮤니티) 는 아래와 같은 HTTP Request를 생성합니다.
 
 http://www.youtube.com/oembed?url=http%3A//youtube.com/watch%3Fv%3DM3r2XDceM6A&format=json
+
 그때 Provider( Youtube ) 는 oEmbed response를 돌려줍니다.''';
 
 const String sampleURL = "https://youtu.be/FtutLA63Cp8";
@@ -80,25 +81,39 @@ class _InputFormState extends State<InputForm> {
             ),
             TextFormField(
               controller: widget.url,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding: EdgeInsets.all(10),
                 hintText: sampleURL,
-                hintStyle: TextStyle(
+                hintStyle: const TextStyle(
                   color: Colors.black26,
                   fontSize: 16.0,
                   fontStyle: FontStyle.italic,
                 ),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.only(top: 0), // add padding to adjust icon
+                  child: Icon(Icons.search),
+                ),
+                suffixIcon: IconButton(
+                  onPressed: widget.url.clear,
+                  icon: const Icon(Icons.clear),
+                ),
               ),
             ),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
             const Text(
               '여러분이 자주 사용하시는 사이트의 주소를 입력해보세요',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 15,
                 color: Colors.black,
                 fontWeight: FontWeight.bold
+              ),
+            ),
+            const Text(
+              'Vimeo, Facebook, Instagram 주소도 됩니다!',
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey,
               ),
             ),
           ],
@@ -197,17 +212,20 @@ class MyHomePage extends StatelessWidget {
       ),
       bottomNavigationBar: Material(
         color: Colors.white,
+        borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20.0),
+            topRight: Radius.circular(20.0)
+        ),
         child: InkWell(
           onTap: () {
             openBottomSheet();
           },
           child: const SizedBox(
             height: kToolbarHeight,
-            width: double.infinity,
             child: Center(
               child: Text(
                 '사용해보기',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
               ),
             ),
           ),
