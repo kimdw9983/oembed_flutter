@@ -157,40 +157,37 @@ class NavDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
+        children: [
+          const SizedBox(
+            height: 88,
+            child: DrawerHeader(
+              duration: Duration(milliseconds: 100),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('사이드 메뉴',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+              ),
             ),
-            child: Text(
-              'Side menu',
-              style: TextStyle(color: Colors.white, fontSize: 25),
-            ),
           ),
           ListTile(
-            leading: const Icon(Icons.input),
-            title: const Text('Welcome'),
-            onTap: () => {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.verified_user),
-            title: const Text('Profile'),
-            onTap: () => {Navigator.of(context).pop()},
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
+            leading: const Icon(Icons.toggle_off),
+            title: const Text('다크 모드'),
             onTap: () => {Navigator.of(context).pop()},
           ),
           ListTile(
             leading: const Icon(Icons.border_color),
-            title: const Text('Feedback'),
-            onTap: () => {Navigator.of(context).pop()},
+            title: const Text('피드백 보내기'),
+            onTap: () => {
+              Navigator.of(context).pop()
+            },
           ),
           ListTile(
-            leading: const Icon(Icons.exit_to_app),
-            title: const Text('Logout'),
-            onTap: () => {Navigator.of(context).pop()},
+            leading: const Icon(Icons.chat),
+            title: const Text('About Me'),
+            onTap: () => {
+              Navigator.of(context).pop()
+            },
           ),
         ],
       ),
@@ -198,10 +195,11 @@ class NavDrawer extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage  extends StatelessWidget {
+  final TextEditingController urlField = TextEditingController();
+
   MyHomePage({Key? key}) : super(key: key);
 
-  final TextEditingController urlField = TextEditingController();
   void openBottomSheet() {
     Get.bottomSheet(
       Stack(
@@ -225,7 +223,7 @@ class MyHomePage extends StatelessWidget {
                 onTap: () {
                   Get.to(() => SecondPage(arg: URLArguments("TEST", urlField.text.isNotEmpty ? urlField.text : sampleURL)));
                 },
-                chilㄻd: const SizedBox(
+                child: const SizedBox(
                   height: kToolbarHeight,
                   child: Center(
                     child: Text(
@@ -239,7 +237,7 @@ class MyHomePage extends StatelessWidget {
           ),
         ],
       ),
-      elevation: 0,
+      enableDrag: true,
       enterBottomSheetDuration: const Duration(milliseconds: 150),
     );
   }
@@ -257,7 +255,7 @@ class MyHomePage extends StatelessWidget {
           title: const Text('oEmbed Interface',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 34,
+              fontSize: 28,
               fontWeight: FontWeight.bold
             ),
           ),
