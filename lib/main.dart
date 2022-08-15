@@ -36,14 +36,29 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Colors.blue,
         textTheme: const TextTheme(
           headline1: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.white), //제목 + 버튼
-          bodyText1: TextStyle(fontSize: 14.0),
+          headline2: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.black),
+          headline3: TextStyle(fontSize: 18.0, color: Colors.black87),
+          headline4: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
+          bodyText1: TextStyle(fontSize: 16.0, color: Colors.black),
+          bodyText2: TextStyle(fontSize: 14.0, color: Colors.grey),
+          caption: TextStyle(color: Colors.black26, fontSize: 16.0, fontStyle: FontStyle.italic),
         ),
       ),
       darkTheme: ThemeData(
         colorScheme: const ColorScheme.dark(),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.black54,
+        ),
+        drawerTheme: const DrawerThemeData(
+          backgroundColor: Colors.black54,
+        ),
         textTheme: const TextTheme(
           headline1: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.white), //제목 + 버튼
-          bodyText1: TextStyle(fontSize: 14.0),
+          headline2: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Colors.white),
+          headline3: TextStyle(fontSize: 18.0, color: Colors.white),
+          headline4: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
+          bodyText1: TextStyle(fontSize: 16.0, color: Colors.white70),
+          bodyText2: TextStyle(fontSize: 14.0, color: Colors.white70),
         ),
       ),
       themeMode: _themeMode,

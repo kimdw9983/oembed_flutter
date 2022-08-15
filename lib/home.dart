@@ -51,9 +51,9 @@ class _InputFormState extends State<InputForm> {
   Widget build(BuildContext context) {
     return Container(
       height: 350,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
+      decoration: BoxDecoration(
+        color: Theme.of(context).backgroundColor,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20.0),
           topRight: Radius.circular(20.0)
         ),
@@ -64,33 +64,22 @@ class _InputFormState extends State<InputForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Padding(padding: EdgeInsets.symmetric(vertical: 12.0)),
-            const Text(
+            Text(
               '사용해보기',
-              style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
-              ),
+              style: Get.textTheme.headline2,
             ),
             const Padding(padding: EdgeInsets.symmetric(vertical: 15.0)),
-            const Text(
+            Text(
               "URL",
-              style: TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.black
-              ),
+              style: Get.textTheme.headline3,
             ),
             TextFormField(
               controller: widget.url,
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white,
+                fillColor: Get.theme.canvasColor,
                 hintText: sampleURL,
-                hintStyle: const TextStyle(
-                  color: Colors.black26,
-                  fontSize: 16.0,
-                  fontStyle: FontStyle.italic,
-                ),
+                hintStyle: Theme.of(context).textTheme.caption,
                 prefixIcon: const Padding(
                   padding: EdgeInsets.only(top: 0), // add padding to adjust icon
                   child: Icon(Icons.search),
@@ -102,20 +91,13 @@ class _InputFormState extends State<InputForm> {
               ),
             ),
             const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
-            const Text(
-              '여러분이 자주 사용하시는 사이트의 주소를 입력해보세요',
-              style: TextStyle(
-                fontSize: 15,
-                color: Colors.black,
-                fontWeight: FontWeight.bold
-              ),
+            Text(
+              '자주 사용하시는 사이트의 주소를 입력해보세요',
+              style: Theme.of(context).textTheme.bodyText1,
             ),
-            const Text(
+            Text(
               'Vimeo, Facebook, Instagram 주소도 됩니다!',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              style: Theme.of(context).textTheme.bodyText2,
             ),
           ],
         ),
@@ -132,18 +114,15 @@ class BackContent extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
+        children: [
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: Text(raw,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black
-              ),
+              style: Theme.of(context).textTheme.bodyText1,
             ),
           ),
-          Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
+          const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
         ],
       ),
     );
@@ -167,7 +146,7 @@ class NavDrawer extends StatelessWidget {
               margin: const EdgeInsets.only(),
               duration: const Duration(milliseconds: 100),
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor
+                color: Theme.of(context).appBarTheme.backgroundColor
               ),
               child: Text('사이드 메뉴',
                 style: Theme.of(context).textTheme.headline1,
@@ -231,17 +210,17 @@ class MyHomePage  extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Material(
-              color: Colors.blue,
+              color: Get.theme.primaryColor,
               child: InkWell(
                 onTap: () {
                   Get.to(() => SecondPage(arg: URLArguments("TEST", urlField.text.isNotEmpty ? urlField.text : sampleURL)));
                 },
-                child: const SizedBox(
+                child: SizedBox(
                   height: kToolbarHeight,
                   child: Center(
                     child: Text(
                       '검색',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                      style: Get.textTheme.headline4,
                     ),
                   ),
                 ),
@@ -259,7 +238,6 @@ class MyHomePage  extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: const NavDrawer(),
-      backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(55.0),
         child: AppBar(
@@ -274,21 +252,21 @@ class MyHomePage  extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: Material(
-        color: Colors.blue,
+        color: Theme.of(context).appBarTheme.backgroundColor,
         borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0)
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0)
         ),
         child: InkWell(
           onTap: () {
             openBottomSheet();
           },
-          child: const SizedBox(
+          child: SizedBox(
             height: kToolbarHeight,
             child: Center(
               child: Text(
                 '사용해보기',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                style: Theme.of(context).textTheme.headline4,
               ),
             ),
           ),
