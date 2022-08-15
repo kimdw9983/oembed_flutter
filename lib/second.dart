@@ -10,6 +10,7 @@ import 'package:oembed_flutter/home.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+const address = "222.109.61.70";
 class OEmbedMessage {
   final String status;
   final OEmbedData data;
@@ -81,7 +82,6 @@ class OEmbedData {
   }
 }
 
-const address = "222.109.61.70";
 Future<OEmbedMessage> request(http.Client client, String url) async {
   var uri = Uri(scheme: 'http', host: address, port: 8080, path: '/oembed/$url');
   log('get() url : $url, uri : $uri');
