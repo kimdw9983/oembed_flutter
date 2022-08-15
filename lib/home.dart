@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'main.dart';
 import 'second.dart';
 
 const raw = '''oEmbed는 여러 사이트의 컨텐츠가 포함된 url을 내장된 표현으로 보여주게 하는 형식입니다. 
@@ -173,7 +174,9 @@ class NavDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.toggle_off),
             title: const Text('다크 모드'),
-            onTap: () => {Navigator.of(context).pop()},
+            onTap: () => {
+              MyApp.of(context).changeTheme(ThemeMode.light),
+            },
           ),
           ListTile(
             leading: const Icon(Icons.border_color),

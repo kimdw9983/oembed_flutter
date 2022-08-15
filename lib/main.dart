@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'home.dart';
 
@@ -6,26 +7,13 @@ void main() {
   runApp(const MyApp());
 }
 
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return GetMaterialApp(
-//       title: 'oEmbed Interface',
-//       theme: ThemeData(primarySwatch: Colors.blue, ),
-//       home: MyHomePage(),
-//     );
-//   }
-// }
-
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  _MyAppState createState() => _MyAppState();
 
-  static State<MyApp> of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>()!;
+  static _MyAppState of(BuildContext context) => context.findAncestorStateOfType<_MyAppState>()!;
 }
 
 class _MyAppState extends State<MyApp> {
@@ -33,8 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'oEmbed Interface',
+    return GetMaterialApp(
       theme: ThemeData(),
       darkTheme: ThemeData.dark(),
       themeMode: _themeMode, // 2) ← ← ← use "state" field here //////////////
@@ -48,3 +35,46 @@ class _MyAppState extends State<MyApp> {
     });
   }
 }
+
+/*
+
+class _MyHomePage extends StatelessWidget {
+  final String title;
+
+  const _MyHomePage({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text('Choose your theme:'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                /// //////////////////////////////////////////////////////
+                /// Change theme & rebuild to show it using these buttons
+                /// to find our State object and call changeTheme()
+                ElevatedButton(
+                    onPressed: () => MyApp.of(context).changeTheme(ThemeMode.light),
+                    child: const Text('Light')),
+                ElevatedButton(
+                    onPressed: () => MyApp.of(context).changeTheme(ThemeMode.dark),
+                    child: const Text('Dark')),
+                /// //////////////////////////////////////////////////////
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+
+ */
