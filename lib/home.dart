@@ -129,8 +129,15 @@ class BackContent extends StatelessWidget {
   }
 }
 
-class NavDrawer extends StatelessWidget {
+class NavDrawer extends StatefulWidget {
   const NavDrawer({Key? key}) : super(key: key);
+
+  @override
+  State<NavDrawer> createState() => _NavDrawerState();
+}
+
+class _NavDrawerState extends State<NavDrawer> {
+  bool isDarkMode = Get.theme.brightness == Brightness.dark;
 
   @override
   Widget build(BuildContext context) {
@@ -148,23 +155,19 @@ class NavDrawer extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Theme.of(context).appBarTheme.backgroundColor
               ),
-              child: Text('사이드 메뉴',
+              child: Text('메뉴',
                 style: Theme.of(context).textTheme.headline1,
               ),
             ),
           ),
           ListTile(
-            leading: const Icon(Icons.toggle_off),
+            leading: Icon(isDarkMode ? Icons.toggle_on : Icons.toggle_off),
             title: const Text('다크 모드'),
             onTap: () => {
-              MyApp.of(context).changeTheme(ThemeMode.dark),
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.toggle_on),
-            title: const Text('리버스 다크 모드'),
-            onTap: () => {
-              MyApp.of(context).changeTheme(ThemeMode.light),
+              MyApp.of(context).changeTheme(isDarkMode ? ThemeMode.light : ThemeMode.dark),
+              setState(() {
+                isDarkMode = !isDarkMode;
+              })
             },
           ),
           ListTile(
