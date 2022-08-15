@@ -62,7 +62,7 @@ class _InputFormState extends State<InputForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(padding: EdgeInsets.symmetric(vertical: 15.0)),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 12.0)),
             const Text(
               '사용해보기',
               style: TextStyle(
@@ -132,24 +132,13 @@ class BackContent extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15.0),
-            child: Text('oEmbed Interface',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 38,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-          ),
           Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.0),
             child: Text(raw,
               style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white
+                fontSize: 16,
+                color: Colors.black
               ),
             ),
           ),
@@ -160,11 +149,59 @@ class BackContent extends StatelessWidget {
   }
 }
 
+class NavDrawer extends StatelessWidget {
+  const NavDrawer({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
+            child: Text(
+              'Side menu',
+              style: TextStyle(color: Colors.white, fontSize: 25),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.input),
+            title: const Text('Welcome'),
+            onTap: () => {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.verified_user),
+            title: const Text('Profile'),
+            onTap: () => {Navigator.of(context).pop()},
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () => {Navigator.of(context).pop()},
+          ),
+          ListTile(
+            leading: const Icon(Icons.border_color),
+            title: const Text('Feedback'),
+            onTap: () => {Navigator.of(context).pop()},
+          ),
+          ListTile(
+            leading: const Icon(Icons.exit_to_app),
+            title: const Text('Logout'),
+            onTap: () => {Navigator.of(context).pop()},
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class MyHomePage extends StatelessWidget {
   MyHomePage({Key? key}) : super(key: key);
 
   final TextEditingController urlField = TextEditingController();
-
   void openBottomSheet() {
     Get.bottomSheet(
       Stack(
@@ -189,7 +226,9 @@ class MyHomePage extends StatelessWidget {
                 onPressed: () {
                   Get.to(() => SecondPage(arg: URLArguments("TEST", urlField.text.isNotEmpty ? urlField.text : sampleURL)));
                 },
-                child: const Text('검색'),
+                child: const Text('검색',
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
               ),
             ),
           ),
@@ -203,15 +242,29 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.blue,
+      drawer: const NavDrawer(),
+      backgroundColor: Colors.white,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(55.0),
+        child: AppBar(
+          iconTheme: const IconThemeData(color: Colors.black),
+          backgroundColor: Colors.blue,
+          title: const Text('oEmbed Interface',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 34,
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ),
+      ),
       body: Stack(
         children: const [
           BackContent(),
         ],
       ),
       bottomNavigationBar: Material(
-        color: Colors.white,
+        color: Colors.blue,
         borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20.0),
             topRight: Radius.circular(20.0)
@@ -225,7 +278,7 @@ class MyHomePage extends StatelessWidget {
             child: Center(
               child: Text(
                 '사용해보기',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
               ),
             ),
           ),
