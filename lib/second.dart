@@ -176,27 +176,34 @@ List<DataRow> getDataRow(OEmbedData data) {
   return res;
 }
 
-SizedBox getEmbed(OEmbedData data) {
-  String html = data.html.toString();
-  String raw = html;
-  String src = "";
+String getURL(String raw) {
+  String url = "";
   var pattern = RegExp("src=\\\"(.*?]*)\"");
   if (pattern.hasMatch(raw)) {
     var f = pattern.stringMatch(raw).toString();
-    src = f.substring(5, f.length-1);
+    var src = f.substring(5, f.length-1);
+
+    url = Uri.dataFromString("<html><body><iframe frameborder='0' style='top:0;left:0;position:absolute;width:100%;height:100%' src=$src allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' </iframe></body></html>", mimeType: 'text/html').toString();
+  } else { //TODO: RichText Support
+    url = Uri.dataFromString("<html><body>$raw</body></html>", mimeType: "text/html").toString();
   }
 
+  return url;
+}
+
+SizedBox getEmbed(OEmbedData data) {
   final Completer<WebViewController> controller = Completer<WebViewController>();
   const minSize = 200.0;
   const maxSize = 480.0;
+  var oEmbedHeight = data.height.toString() == "null" ? 200.0 : math.max(math.min(double.parse(data.height.toString()), maxSize), minSize);
 
   return SizedBox(
-    height: math.max(math.min(double.parse(data.height.toString()), maxSize), minSize),
+    height: oEmbedHeight,
     child: Stack(
       alignment: Alignment.topCenter,
       children: [
-        WebView(
-          initialUrl: Uri.dataFromString("<html><body><iframe frameborder='0' style='top:0;left:0;position:absolute;width:100%;height:100%' src=$src allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' </iframe></body></html>", mimeType: 'text/html').toString(),
+        WebView( //TODO : 다크모드에 따른 webview 기본색 변경 css
+          initialUrl: getURL(data.html.toString()),
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
             controller.complete(webViewController);
@@ -225,13 +232,13 @@ class _OEmbedViewState extends State<OEmbedView> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) { //TODO: dispose correctly; 다크모드 전환하면 고장남
       scrollController.position.isScrollingNotifier.addListener(() =>
-          setState(() {
-            if (!scrollController.position.isScrollingNotifier.value) {
-              isScrolling = true;
-            } else {
-              isScrolling = false;
-            }
-          })
+        setState(() {
+          if (!scrollController.position.isScrollingNotifier.value) {
+            isScrolling = true;
+          } else {
+            isScrolling = false;
+          }
+        })
       );
     });
   }
@@ -239,7 +246,7 @@ class _OEmbedViewState extends State<OEmbedView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.data.title.toString())),
+      appBar: AppBar(title: Text( widget.data.title.toString() == "null" ? widget.data.authorName.toString() : widget.data.title.toString())),
       body: SingleChildScrollView(
         controller: scrollController,
         child: Column(
