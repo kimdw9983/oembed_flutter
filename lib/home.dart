@@ -218,13 +218,34 @@ class _NavDrawerState extends State<NavDrawer> {
   }
 }
 
-class MyHomePage  extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  bool isScrolling = false;
+
   final TextEditingController urlField = TextEditingController();
-  final ScrollController scrollController = ScrollController()
-    ..addListener(() {
-      log("scrolling");
+  final ScrollController scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { //TODO: dispose correctly; 다크모드 전환하면 고장남
+      scrollController.position.isScrollingNotifier.addListener(() =>
+        setState(() {
+          if (!scrollController.position.isScrollingNotifier.value) {
+            isScrolling = true;
+          } else {
+            isScrolling = false;
+          }
+        })
+      );
     });
-  MyHomePage({Key? key}) : super(key: key);
+  }
 
   void openBottomSheet() {
     Get.bottomSheet(
@@ -310,11 +331,11 @@ class MyHomePage  extends StatelessWidget {
         height: 30,
         //child: const Icon(Icons.arrow_upward),
         child: AnimatedOpacity(
-          opacity: true ? 1.0 : 0.0,
+          opacity: isScrolling ? 1.0 : 0.0,
           duration: const Duration(milliseconds: 100),
           child: FloatingActionButton(
             shape: const BeveledRectangleBorder(
-                borderRadius: BorderRadius.zero
+              borderRadius: BorderRadius.zero
             ),
             onPressed: () {
               scrollController.animateTo(0.0, curve: Curves.easeOut, duration: const Duration(milliseconds: 500));

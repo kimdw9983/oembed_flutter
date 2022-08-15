@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       themeMode: _themeMode,
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 
