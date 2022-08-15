@@ -226,10 +226,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool isScrolling = false;
-
   final TextEditingController urlField = TextEditingController();
   final ScrollController scrollController = ScrollController();
+
+  bool isScrolling = false;
 
   @override
   void initState() {

@@ -164,10 +164,6 @@ List<DataRow> getDataRow(OEmbedData data) {
     ))
     ]));
   }
-  if (data.thumbnailUrl.toString() != "null") {
-    res.add(DataRow(cells: [const DataCell(Text("thumbnail")), DataCell(Image.network(data.thumbnailUrl.toString())),]
-    ));
-  }
   if (data.thumbnailWidth.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_width")), DataCell(Text(data.thumbnailWidth.toString()))] ));
   if (data.thumbnailHeight.toString() != "null") res.add(DataRow(cells: [const DataCell(Text("thumbnail_height")), DataCell(Text(data.thumbnailHeight.toString()))] ));
 
@@ -208,28 +204,75 @@ SizedBox getEmbed(OEmbedData data) {
   );
 }
 
-class OEmbedView extends StatelessWidget {
+class OEmbedView extends StatefulWidget {
   final OEmbedData data;
   const OEmbedView({Key? key, required this.data}) : super(key: key);
 
   @override
+  State<OEmbedView> createState() => _OEmbedViewState();
+}
+
+class _OEmbedViewState extends State<OEmbedView> {
+  final ScrollController scrollController = ScrollController();
+  bool isScrolling = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) { //TODO: dispose correctly; 다크모드 전환하면 고장남
+      scrollController.position.isScrollingNotifier.addListener(() =>
+          setState(() {
+            if (!scrollController.position.isScrollingNotifier.value) {
+              isScrolling = true;
+            } else {
+              isScrolling = false;
+            }
+          })
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(data.title.toString())),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              getEmbed(data),
-              DataTable(
-                columns: const <DataColumn>[
-                  DataColumn(label: Text('Field')),
-                  DataColumn(label: Text('Data')),
-                ],
-                rows: getDataRow(data),
-              ),
-            ],
+      appBar: AppBar(title: Text(widget.data.title.toString())),
+      body: SingleChildScrollView(
+        controller: scrollController,
+        child: Column(
+          children: [
+            getEmbed(widget.data),
+            DataTable(
+              horizontalMargin: 10,
+              columnSpacing: 10,
+              dataRowHeight: 30,
+              columns: const [
+                DataColumn(label: Text('Field')),
+                DataColumn(label: Text('Data')),
+              ],
+              rows: getDataRow(widget.data),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: SizedBox(
+        width: 30,
+        height: 30,
+        //child: const Icon(Icons.arrow_upward),
+        child: AnimatedOpacity(
+          opacity: isScrolling ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 100),
+          child: FloatingActionButton(
+            shape: const BeveledRectangleBorder(
+              borderRadius: BorderRadius.zero
+            ),
+            onPressed: () {
+              scrollController.animateTo(0.0, curve: Curves.easeOut, duration: const Duration(milliseconds: 200));
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.arrow_upward),
           ),
         ),
+      ),
     );
   }
 }
