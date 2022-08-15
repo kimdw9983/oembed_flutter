@@ -219,15 +219,20 @@ class MyHomePage extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Container(
-              margin: const EdgeInsets.all(5),
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
+            child: Material(
+              color: Colors.blue,
+              child: InkWell(
+                onTap: () {
                   Get.to(() => SecondPage(arg: URLArguments("TEST", urlField.text.isNotEmpty ? urlField.text : sampleURL)));
                 },
-                child: const Text('검색',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                chilㄻd: const SizedBox(
+                  height: kToolbarHeight,
+                  child: Center(
+                    child: Text(
+                      '검색',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
             ),
