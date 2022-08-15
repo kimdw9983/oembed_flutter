@@ -87,7 +87,6 @@ class _InputFormState extends State<InputForm> {
   }
 }
 
-
 class BackContent extends StatelessWidget {
   const BackContent({Key? key}) : super(key: key);
 
@@ -130,13 +129,30 @@ class MyHomePage extends StatelessWidget {
 
   void openBottomSheet() {
     Get.bottomSheet(
-      Column(
+      Stack(
         children: [
-          Expanded(
-            flex: 1,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: InputForm(url: urlField),
+          Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: InputForm(url: urlField),
+                ),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: const EdgeInsets.all(5),
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Get.to(() => SecondPage(arg: URLArguments("TEST", urlField.text.isNotEmpty ? urlField.text : "http")));
+                },
+                child: const Text('검색'),
+              ),
             ),
           ),
         ],
@@ -151,37 +167,23 @@ class MyHomePage extends StatelessWidget {
       //resizeToAvoidBottomInset: false,
       backgroundColor: Colors.blue,
       body: Stack(
-        children: [
-          const BackContent(),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Bottom sheet example'),
-                OutlinedButton(
-                  onPressed: openBottomSheet,
-                  child: const Text('Open'),
-                )
-              ],
-            ),
-          ),
+        children: const [
+          BackContent(),
         ],
       ),
       bottomNavigationBar: Material(
-        color: Colors.blue,
+        color: Colors.white,
         child: InkWell(
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return SecondPage(arg: URLArguments("TEST", urlField.text.isNotEmpty ? urlField.text : "http"));
-            }));
+            openBottomSheet();
           },
           child: const SizedBox(
             height: kToolbarHeight,
             width: double.infinity,
             child: Center(
               child: Text(
-                '검색',
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                '사용해보기',
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
               ),
             ),
           ),
