@@ -22,9 +22,31 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      theme: ThemeData(),
-      darkTheme: ThemeData.dark(),
-      themeMode: _themeMode, // 2) ← ← ← use "state" field here //////////////
+      theme: ThemeData(
+        colorScheme: const ColorScheme.light(),
+        backgroundColor: Colors.white,
+        canvasColor: Colors.white,
+        drawerTheme: const DrawerThemeData(
+          backgroundColor: Colors.blue,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.blue,
+        ),
+        primarySwatch: Colors.blue,
+        primaryColor: Colors.blue,
+        textTheme: const TextTheme(
+          headline1: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.white), //제목 + 버튼
+          bodyText1: TextStyle(fontSize: 14.0),
+        ),
+      ),
+      darkTheme: ThemeData(
+        colorScheme: const ColorScheme.dark(),
+        textTheme: const TextTheme(
+          headline1: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold, color: Colors.white), //제목 + 버튼
+          bodyText1: TextStyle(fontSize: 14.0),
+        ),
+      ),
+      themeMode: _themeMode,
       home: MyHomePage(),
     );
   }

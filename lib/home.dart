@@ -156,24 +156,34 @@ class NavDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Theme.of(context).backgroundColor,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const SizedBox(
-            height: 88,
+          SizedBox(
+            height: 80,
             child: DrawerHeader(
-              duration: Duration(milliseconds: 100),
+              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+              margin: const EdgeInsets.only(),
+              duration: const Duration(milliseconds: 100),
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Theme.of(context).primaryColor
               ),
               child: Text('사이드 메뉴',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+                style: Theme.of(context).textTheme.headline1,
               ),
             ),
           ),
           ListTile(
             leading: const Icon(Icons.toggle_off),
             title: const Text('다크 모드'),
+            onTap: () => {
+              MyApp.of(context).changeTheme(ThemeMode.dark),
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.toggle_on),
+            title: const Text('리버스 다크 모드'),
             onTap: () => {
               MyApp.of(context).changeTheme(ThemeMode.light),
             },
@@ -253,14 +263,8 @@ class MyHomePage  extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(55.0),
         child: AppBar(
-          iconTheme: const IconThemeData(color: Colors.black),
-          backgroundColor: Colors.blue,
-          title: const Text('oEmbed Interface',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 28,
-              fontWeight: FontWeight.bold
-            ),
+          title: Text('oEmbed Interface',
+            style: Theme.of(context).textTheme.headline1,
           ),
         ),
       ),
