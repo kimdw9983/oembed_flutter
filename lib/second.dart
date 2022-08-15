@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -186,20 +187,23 @@ SizedBox getEmbed(OEmbedData data) {
   }
 
   final Completer<WebViewController> controller = Completer<WebViewController>();
+  const minSize = 200.0;
+  const maxSize = 480.0;
 
   return SizedBox(
-    width: 200,
-    height: 150,
+    height: math.max(math.min(double.parse(data.height.toString()), maxSize), minSize),
     child: Stack(
       alignment: Alignment.topCenter,
-      children: [WebView(
-        initialUrl: Uri.dataFromString("<html><body><iframe frameborder='0' style='top:0;left:0;position:absolute;width:100%;height:100%' src=$src allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' </iframe></body></html>", mimeType: 'text/html').toString(),
-        javascriptMode: JavascriptMode.unrestricted,
-        onWebViewCreated: (WebViewController webViewController) {
-          controller.complete(webViewController);
-        },
-        gestureNavigationEnabled: true,
-      ),]
+      children: [
+        WebView(
+          initialUrl: Uri.dataFromString("<html><body><iframe frameborder='0' style='top:0;left:0;position:absolute;width:100%;height:100%' src=$src allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' </iframe></body></html>", mimeType: 'text/html').toString(),
+          javascriptMode: JavascriptMode.unrestricted,
+          onWebViewCreated: (WebViewController webViewController) {
+            controller.complete(webViewController);
+          },
+          gestureNavigationEnabled: true,
+        ),
+      ]
     ),
   );
 }
@@ -241,10 +245,12 @@ class _OEmbedViewState extends State<OEmbedView> {
         child: Column(
           children: [
             getEmbed(widget.data),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 10.0)),
             DataTable(
+              headingRowHeight: 30,
               horizontalMargin: 10,
               columnSpacing: 10,
-              dataRowHeight: 30,
+              dataRowHeight: 40,
               columns: const [
                 DataColumn(label: Text('Field')),
                 DataColumn(label: Text('Data')),
