@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'dart:developer';
 
 import 'main.dart';
 import 'second.dart';
@@ -24,8 +26,9 @@ consumer( 위에서 언급했던 Facebook 과 같은 SNS 혹은 커뮤니티) �
 http://www.youtube.com/oembed?url=http%3A//youtube.com/watch%3Fv%3DM3r2XDceM6A&format=json
 
 그때 Provider( Youtube ) 는 oEmbed response를 돌려줍니다.''';
-
 const String sampleURL = "https://youtu.be/FtutLA63Cp8";
+const String feedbackURL = "https://github.com/kimdw9983/oembed_flutter/issues";
+
 class URLArguments {
   final String title;
   final String url;
@@ -106,12 +109,19 @@ class _InputFormState extends State<InputForm> {
   }
 }
 
-class BackContent extends StatelessWidget {
-  const BackContent({Key? key}) : super(key: key);
+class BackContent extends StatefulWidget {
+  const BackContent({Key? key, required this.scrollController}) : super(key: key);
+  final ScrollController scrollController;
 
+  @override
+  State<BackContent> createState() => _BackContentState();
+}
+
+class _BackContentState extends State<BackContent> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
+      controller: widget.scrollController,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -143,46 +153,64 @@ class _NavDrawerState extends State<NavDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Theme.of(context).backgroundColor,
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Stack(
         children: [
-          SizedBox(
-            height: 80,
-            child: DrawerHeader(
-              padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-              margin: const EdgeInsets.only(),
-              duration: const Duration(milliseconds: 100),
-              decoration: BoxDecoration(
-                color: Theme.of(context).appBarTheme.backgroundColor
-              ),
-              child: Text('메뉴',
-                style: Theme.of(context).textTheme.headline1,
-              ),
+          Positioned(
+            bottom: 0,
+            width: MediaQuery.of(context).size.width,
+            child: const Padding(
+              padding: EdgeInsets.only(left: 20),
+              child: Text('© 2022 kimdw9983'),
             ),
           ),
-          ListTile(
-            leading: Icon(isDarkMode ? Icons.toggle_on : Icons.toggle_off),
-            title: const Text('다크 모드'),
-            onTap: () => {
-              MyApp.of(context).changeTheme(isDarkMode ? ThemeMode.light : ThemeMode.dark),
-              setState(() {
-                isDarkMode = !isDarkMode;
-              })
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.border_color),
-            title: const Text('피드백 보내기'),
-            onTap: () => {
-              Navigator.of(context).pop()
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.chat),
-            title: const Text('About Me'),
-            onTap: () => {
-              Navigator.of(context).pop()
-            },
+          ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              SizedBox(
+                height: 80,
+                child: DrawerHeader(
+                  padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                  margin: const EdgeInsets.only(),
+                  duration: const Duration(milliseconds: 100),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).appBarTheme.backgroundColor
+                  ),
+                  child: Text('메뉴',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                ),
+              ),
+              ListTile(
+                leading: Icon(isDarkMode ? Icons.toggle_on : Icons.toggle_off),
+                title: const Text('다크 모드'),
+                onTap: () => {
+                  MyApp.of(context).changeTheme(isDarkMode ? ThemeMode.light : ThemeMode.dark),
+                  setState(() {
+                    isDarkMode = !isDarkMode;
+                  })
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.border_color),
+                title: const Text('피드백 보내기'),
+                onTap: () async {
+                  String url = feedbackURL;
+                  if(await canLaunchUrlString(url)) launchUrlString(url);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.chat),
+                title: const Text('About'),
+                onTap: () => {
+                  Get.defaultDialog(
+                    title: "About",
+                    radius: 0,
+                    onConfirm: () => Navigator.of(context).pop(),
+                    middleText: "제 앱을 이용해주셔서 감사합니다!"
+                  ),
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -192,7 +220,10 @@ class _NavDrawerState extends State<NavDrawer> {
 
 class MyHomePage  extends StatelessWidget {
   final TextEditingController urlField = TextEditingController();
-
+  final ScrollController scrollController = ScrollController()
+    ..addListener(() {
+      log("scrolling");
+    });
   MyHomePage({Key? key}) : super(key: key);
 
   void openBottomSheet() {
@@ -236,7 +267,6 @@ class MyHomePage  extends StatelessWidget {
       enterBottomSheetDuration: const Duration(milliseconds: 150),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,8 +280,8 @@ class MyHomePage  extends StatelessWidget {
         ),
       ),
       body: Stack(
-        children: const [
-          BackContent(),
+        children: [
+          BackContent(scrollController: scrollController),
         ],
       ),
       bottomNavigationBar: Material(
@@ -272,6 +302,25 @@ class MyHomePage  extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline4,
               ),
             ),
+          ),
+        ),
+      ),
+      floatingActionButton: SizedBox(
+        width: 30,
+        height: 30,
+        //child: const Icon(Icons.arrow_upward),
+        child: AnimatedOpacity(
+          opacity: true ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 100),
+          child: FloatingActionButton(
+            shape: const BeveledRectangleBorder(
+                borderRadius: BorderRadius.zero
+            ),
+            onPressed: () {
+              scrollController.animateTo(0.0, curve: Curves.easeOut, duration: const Duration(milliseconds: 500));
+            },
+            tooltip: 'Increment',
+            child: const Icon(Icons.arrow_upward),
           ),
         ),
       ),
