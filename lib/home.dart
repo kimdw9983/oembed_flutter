@@ -23,68 +23,75 @@ class _InputFormState extends State<InputForm> {
     super.initState();
   }
 
-  double bannerHeight = 200;
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: bannerHeight,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0)
-        ),
-      ),
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '사용해보기',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
-                ),
+    return DraggableScrollableSheet(
+      initialChildSize: 0.5,
+      minChildSize: 0.1,
+      maxChildSize: 1,
+      builder: (BuildContext context, ScrollController scrollController) {
+        return SingleChildScrollView(
+          controller: scrollController,
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0)
               ),
-              const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
-              const Text(
-                "URL",
-                style: TextStyle(
-                  fontSize: 18.0,
-                  color: Colors.black
-                ),
-              ),
-              TextFormField(
-                controller: widget.url,
-                decoration: const InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: EdgeInsets.all(10),
-                  hintText: "https://youtu.be/FtutLA63Cp8",
-                  hintStyle: TextStyle(
-                    color: Colors.black26,
-                    fontSize: 16.0,
-                    fontStyle: FontStyle.italic,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 15.0)),
+                  const Text(
+                    '사용해보기',
+                    style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
                   ),
-                ),
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
+                  const Text(
+                    "URL",
+                    style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black
+                    ),
+                  ),
+                  TextFormField(
+                    controller: widget.url,
+                    decoration: const InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: EdgeInsets.all(10),
+                      hintText: "https://youtu.be/FtutLA63Cp8",
+                      hintStyle: TextStyle(
+                        color: Colors.black26,
+                        fontSize: 16.0,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
+                  const Text(
+                    '여러분이 자주 사용하시는 사이트의 주소를 입력해보세요',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  //const Spacer(),
+                ],
               ),
-              const Padding(padding: EdgeInsets.symmetric(vertical: 5.0)),
-              const Text(
-                '여러분이 자주 사용하시는 사이트의 주소를 입력해보세요',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 }
@@ -136,8 +143,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 65.0)),
-            InputForm(url: urlField),
+            const Padding(padding: EdgeInsets.symmetric(vertical: 95.0)),
+            Expanded(
+              flex: 1,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: InputForm(url: urlField),
+              ),
+            ),
           ],
         ),
       ),
